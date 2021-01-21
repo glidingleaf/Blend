@@ -26,7 +26,7 @@ class Game():
         self.BACK_KEY = False
 
         self.GAMEWINDOW_W, self.GAMEWINDOW_H = 512, 288
-        self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H = 512*4, 288*4
+        self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H = int(512*3.75), int(288*3.75)
     
 
         self.gamescreen = pygame.Surface((self.GAMEWINDOW_W,self.GAMEWINDOW_H))
