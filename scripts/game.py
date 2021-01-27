@@ -1,6 +1,8 @@
 import pygame 
 from .map import Map
 import os
+from .player import Player
+
 
 
 
@@ -25,8 +27,9 @@ class Game():
         self.START_KEY = False
         self.BACK_KEY = False
 
+        
         self.GAMEWINDOW_W, self.GAMEWINDOW_H = 512, 288
-        self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H = int(512*3.75), int(288*3.75)
+        self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H = int(512*3), int(288*3)
     
 
         self.gamescreen = pygame.Surface((self.GAMEWINDOW_W,self.GAMEWINDOW_H))
@@ -35,33 +38,35 @@ class Game():
 
         self.level = Map("./assets/maps/world_test2.tmx")
 
+        self.p = Player("assets/images/player/player.png")
+
 
     def game_loop(self):
 
         while self.playing:
             
+        #    self.p.reset_keys()
             self.check_events()
 
             if self.START_KEY == True:
-
                 self.playing = False
 
 
             self.gamescreen.fill(self.COLOR_BG)
             self.gamescreen = self.level.drawmap(self.gamescreen)  # testing maps
+        
+            # Player Render
+            player_with_world= self.p.update(self.gamescreen, self.level.tile_rects) 
+            scaled_surface = pygame.transform.scale(player_with_world,(self.A_GAMEWINDOW_W,self.A_GAMEWINDOW_H))                   
 
-            scaled_surface = pygame.transform.scale(self.gamescreen,(self.A_GAMEWINDOW_W,self.A_GAMEWINDOW_H))
-            self.window.blit(scaled_surface,(0,0))
+            # Window Render
+            self.window.blit(scaled_surface,(0,0))          
 
-            #self.window.blit(self.gamescreen,(0,0)) ---> non scaled blit
-
-
-            pygame.display.update()
-            self.reset_keys()
-            
+            pygame.display.update()            
             self.clock.tick(self.FRAMERATE)
 
 
+    #  Check_ events is not yet completed 
 
 
     def check_events(self):
@@ -72,33 +77,39 @@ class Game():
                 self.running = False
                 self.playing = False
 
-            if event.type == pygame.K_RETURN:
-                self.START_KEY = True
+            if event.type == pygame.KEYDOWN:
 
-            if event.type == pygame.K_UP:
-                self.START_KEY = True
+                if event.key == pygame.K_RETURN:
+                    self.p.START_KEY = True
 
-            if event.type == pygame.K_DOWN:
-                self.START_KEY = True
+                if event.key == pygame.K_UP:
+                    self.p.UP_KEY = True
 
-            if event.type == pygame.K_RIGHT:
-                self.START_KEY = True
+                if event.key == pygame.K_DOWN:
+                    self.p.DOWN_KEY = True
 
-            if event.type == pygame.K_LEFT:
-                self.START_KEY = True
+                if event.key == pygame.K_RIGHT:
+                    self.p.RIGHT_KEY = True
 
-            if event.type == pygame.K_BACKSPACE:
-                self.START_KEY = True
+                if event.key == pygame.K_LEFT:
+                    self.p.LEFT_KEY = True
+
+                if event.key == pygame.K_BACKSPACE:
+                    self.p.BACK_KEY = True
 
 
-    def reset_keys(self):
+            if event.type == pygame.KEYUP:
+
+                if event.key == pygame.K_RIGHT:
+                    self.p.RIGHT_KEY = False
+
+                if event.key == pygame.K_LEFT:
+                    self.p.LEFT_KEY = False
+
+
+
+
+
+    
         
-        self.UP_KEY = False
-        self.DONW_KEY = False
-        self.LEFT_KEY = False
-        self.RIGHT_KEY = False
-        self.START_KEY = False
-        self.BACK_KEY = False
 
-
-        
