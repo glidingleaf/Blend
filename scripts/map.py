@@ -13,10 +13,11 @@ class Map():
         self.tile_height = self.map.tileheight
         self.tile_image = self.map.get_tile_image_by_gid
         self.tile_rects =[]
+        self.SCALE = 3
 
 
  
-    def render_map(self, screen):
+    def render_map(self, screen, offset):
 
         screen.fill((99,155,255)) # needs to be changed(background color has been hardcoded to test)
         self.tile_rects.clear()
@@ -28,8 +29,8 @@ class Map():
                 
                 if gid != 0:
                     
-                    screen.blit(self.tile_image(gid), (x*self.tile_width,y*self.tile_height))
-                    self.tile_rects.append(pygame.Rect(x*self.tile_width,y*self.tile_height,self.tile_width,self.tile_height))
+                    screen.blit(pygame.transform.scale( self.tile_image(gid),(self.tile_width*self.SCALE,    self.tile_height*self.SCALE ) )  , (x*self.tile_width*self.SCALE , y*self.tile_height*self.SCALE ) - offset)
+                    self.tile_rects.append(pygame.Rect(x*self.tile_width*self.SCALE,y*self.tile_height*self.SCALE,self.tile_width*self.SCALE,self.tile_height*self.SCALE))
                     
                     
                     
@@ -40,10 +41,10 @@ class Map():
         
         return self.tile_rects
 
-    def drawmap(self,screen):
+    def drawmap(self,screen,offset):
         
-        #surface = pygame.Surface((512, 288))
-        self.render_map(screen)
+        self.render_map(screen,offset)
+
         return screen
 
         

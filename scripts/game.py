@@ -3,6 +3,8 @@ from .map import Map
 import os
 from .player import Player
 
+from .camera import Camera
+
 
 
 
@@ -40,6 +42,10 @@ class Game():
 
         self.p = Player("assets/images/player/player.png")
 
+        self.camera = Camera(self.p, self.GAMEWINDOW_W, self.GAMEWINDOW_H)
+
+
+
 
     def game_loop(self):
 
@@ -51,12 +57,24 @@ class Game():
             if self.START_KEY == True:
                 self.playing = False
 
+            
+            
 
+            #player update
+            self.p.update(self.level.tile_rects) 
+            
+            #camera update 
+            self.camera.update(self.p)
+
+            #screen fill
             self.gamescreen.fill(self.COLOR_BG)
-            self.gamescreen = self.level.drawmap(self.gamescreen)  # testing maps
-        
+
+
+            # Map render
+            self.gamescreen = self.level.drawmap(self.gamescreen, self.camera.offset)  # testing maps
+
             # Player Render
-            player_with_world= self.p.update(self.gamescreen, self.level.tile_rects) 
+            player_with_world = self.p.render(self.gamescreen, self.camera.offset) 
             scaled_surface = pygame.transform.scale(player_with_world,(self.A_GAMEWINDOW_W,self.A_GAMEWINDOW_H))                   
 
             # Window Render
@@ -97,6 +115,12 @@ class Game():
                 if event.key == pygame.K_BACKSPACE:
                     self.p.BACK_KEY = True
 
+                if event.key == pygame.K_q:
+                    self.camera.C += -100
+
+                if event.key == pygame.K_e:
+                    self.camera.C += 100
+
 
             if event.type == pygame.KEYUP:
 
@@ -105,6 +129,9 @@ class Game():
 
                 if event.key == pygame.K_LEFT:
                     self.p.LEFT_KEY = False
+
+                if event.key == pygame.K_UP:
+                    self.p.UP_KEY = False
 
 
 

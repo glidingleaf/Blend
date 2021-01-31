@@ -3,7 +3,7 @@ from .map import Map
 import math
 
 
-GRAVITY = 1
+GRAVITY = 0.3
 
 class Player():
 
@@ -19,10 +19,10 @@ class Player():
         self.tiles = []
 
 
-        self.JUMPSPEED = -10
-        self.H_SPEED = 0.2
-        self.FRICTION = 0.5
-        self.MAXSPEED = 5.0
+        self.JUMPSPEED = -5
+        self.H_SPEED = 0.3
+        self.FRICTION = 0.8
+        self.MAXSPEED = 2.0
 
         self.UP_KEY = False
         self.DOWN_KEY = False
@@ -32,6 +32,7 @@ class Player():
         self.BACK_KEY = False
 
         self.KEYPRESSED = False
+        self.JUMPED_STATE =  False
         
 
 
@@ -67,6 +68,7 @@ class Player():
         if axis == "horizontal":
 
             collide_rects = self.collision_check() # checking for horizontal collision
+
             for tile in collide_rects:
 
                 if self.velocity.x > 0:
@@ -89,6 +91,7 @@ class Player():
 
                 self.player_rect.left = tile.right
                 self.velocity.x = 0
+
         else:
 
             collide_rects = self.collision_check()  # checking for vertical collision
@@ -111,6 +114,7 @@ class Player():
             if collision_dir["bottom"]:
 
                 self.velocity.y = 0
+                self.JUMPED_STATE = False
 
             if collision_dir["top"]:
                 
@@ -121,11 +125,6 @@ class Player():
                               
 
   
-    def render(self, surface):
-        
-        surface.blit(self.player_image,self.pos)
-        #pygame.draw.rect(surface, (232,121,0), self.player_rect)
-        return surface
 
 
 
@@ -163,20 +162,23 @@ class Player():
         self.KEYPRESSED = False
 
 
+
     def set_position(self, x, y):
 
         self.pos.x = x
         self.pos.y = y
         
-            
+
+
     def event_response(self):
 
         self.KEYPRESSED = self.LEFT_KEY or self.RIGHT_KEY
 
-        if self.UP_KEY:
+        if self.UP_KEY == True and self.JUMPED_STATE == False:
 
             self.velocity.y = self.JUMPSPEED
             self.UP_KEY = False
+            self.JUMPED_STATE = True
 
         if self.KEYPRESSED:
 
@@ -188,20 +190,28 @@ class Player():
 
                 self.velocity.x -= self.H_SPEED
                         
+            if self.velocity.x > self.MAXSPEED:
+
+                self.velocity.x = self.MAXSPEED
+
+            if self.velocity.x < -self.MAXSPEED:
+
+                self.velocity.x = -self.MAXSPEED
+
         else:
 
             self.velocity.x = self.velocity.x * self.FRICTION
             
             if abs(self.velocity.x) < 1:
+
                 self.velocity.x = 0
 
-            elif abs(self.velocity.x) > 3:
-                self.velocity.x = 3
 
            
 
 
-    def  update(self,surface,tile_rects):
+
+    def  update(self,tile_rects):
 
         self.load_colliders(tile_rects)
         self.event_response()
@@ -217,7 +227,12 @@ class Player():
         self.move("horizontal")
 
 
-        surface = self.render(surface)
+        #surface = self.render(surface)
+        
+        
+    def render(self, surface, offset):
+        
+        surface.blit(self.player_image,self.pos - offset)
         
         return surface
         
