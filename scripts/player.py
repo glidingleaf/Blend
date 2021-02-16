@@ -227,7 +227,6 @@ class Player():
         self.move("horizontal")
 
 
-        #surface = self.render(surface)
         
         
     def render(self, surface, offset):

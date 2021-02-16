@@ -2,9 +2,7 @@ import pygame
 from .map import Map
 import os
 from .player import Player
-
 from .camera import Camera
-
 
 
 

@@ -15,7 +15,7 @@ class Camera():
     def update(self,player):
 
         self.offset_f.x += (player.pos.x - self.offset_f.x + self.focus_offset.x) /5
-        self.offset_f.y += (player.pos.y - self.offset_f.y + self.focus_offset.y) /5
+        self.offset_f.y += (player.pos.y - self.offset_f.y + self.focus_offset.y) /10
 
         self.offset.x, self.offset.y = int(self.offset_f.x), int(self.offset_f.y)
 

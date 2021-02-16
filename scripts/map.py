@@ -13,7 +13,7 @@ class Map():
         self.tile_height = self.map.tileheight
         self.tile_image = self.map.get_tile_image_by_gid
         self.tile_rects =[]
-        self.SCALE = 3
+        self.SCALE = 2
 
 
  
