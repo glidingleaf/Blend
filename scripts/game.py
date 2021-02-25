@@ -1,9 +1,8 @@
-import pygame 
+import pygame
 from .map import Map
 import os
 from .player import Player
 from .camera import Camera
-
 
 
 class Game():
@@ -13,11 +12,10 @@ class Game():
         pygame.init()
         self.running = True
         self.playing = False
-        
-        self.COLOR_BG = (99,155,255)
+
+        self.COLOR_BG = (99, 155, 255)
         self.FRAMERATE = 60
 
-        
         # input keys
 
         self.UP_KEY = False
@@ -27,63 +25,59 @@ class Game():
         self.START_KEY = False
         self.BACK_KEY = False
 
-        
         self.GAMEWINDOW_W, self.GAMEWINDOW_H = 512, 288
         self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H = int(512*3), int(288*3)
-    
 
-        self.gamescreen = pygame.Surface((self.GAMEWINDOW_W,self.GAMEWINDOW_H))
-        self.window = pygame.display.set_mode((self.A_GAMEWINDOW_W,self.A_GAMEWINDOW_H))
+        self.gamescreen = pygame.Surface(
+            (self.GAMEWINDOW_W, self.GAMEWINDOW_H))
+        self.window = pygame.display.set_mode(
+            (self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H))
         self.clock = pygame.time.Clock()
 
         self.level = Map("./assets/maps/world_test2.tmx")
 
-        self.p = Player("assets/images/player/player.png")
+        os.chdir("./assets/images/player")
+        self.p = Player(os.getcwd())
+        
 
         self.camera = Camera(self.p, self.GAMEWINDOW_W, self.GAMEWINDOW_H)
-
-
-
 
     def game_loop(self):
 
         while self.playing:
-            
-        #    self.p.reset_keys()
+
+            #    self.p.reset_keys()
             self.check_events()
 
             if self.START_KEY == True:
                 self.playing = False
 
-            
-            
+            # player update
+            self.p.update(self.level.tile_rects)
 
-            #player update
-            self.p.update(self.level.tile_rects) 
-            
-            #camera update 
+            # camera update
             self.camera.update(self.p)
 
-            #screen fill
+            # screen fill
             self.gamescreen.fill(self.COLOR_BG)
 
-
             # Map render
-            self.gamescreen = self.level.drawmap(self.gamescreen, self.camera.offset)  # testing maps
+            self.gamescreen = self.level.drawmap(
+                self.gamescreen, self.camera.offset)  # testing maps
 
             # Player Render
-            player_with_world = self.p.render(self.gamescreen, self.camera.offset) 
-            scaled_surface = pygame.transform.scale(player_with_world,(self.A_GAMEWINDOW_W,self.A_GAMEWINDOW_H))                   
+            player_with_world = self.p.render(
+                self.gamescreen, self.camera.offset)
+            scaled_surface = pygame.transform.scale(
+                player_with_world, (self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H))
 
             # Window Render
-            self.window.blit(scaled_surface,(0,0))          
+            self.window.blit(scaled_surface, (0, 0))
 
-            pygame.display.update()            
+            pygame.display.update()
             self.clock.tick(self.FRAMERATE)
 
-
-    #  Check_ events is not yet completed 
-
+    #  Check_ events is not yet completed
 
     def check_events(self):
 
@@ -119,7 +113,6 @@ class Game():
                 if event.key == pygame.K_e:
                     self.camera.C += 100
 
-
             if event.type == pygame.KEYUP:
 
                 if event.key == pygame.K_RIGHT:
@@ -130,11 +123,3 @@ class Game():
 
                 if event.key == pygame.K_UP:
                     self.p.UP_KEY = False
-
-
-
-
-
-    
-        
-

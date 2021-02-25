@@ -21,6 +21,7 @@ class Map():
 
         screen.fill((99,155,255)) # needs to be changed(background color has been hardcoded to test)
         self.tile_rects.clear()
+
         for layer in self.map.layers:
             
             

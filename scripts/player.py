@@ -1,23 +1,31 @@
 import pygame
 from .map import Map
+from .animator import Animator
 import math
 
 
 GRAVITY = 0.3
 
+
 class Player():
 
-    def __init__(self,player_image):
-        
-        self.pos = pygame.math.Vector2(50,50)
-        self.velocity = pygame.math.Vector2(0,0)
-        
-        self.player_image = pygame.image.load(player_image).convert()
-        self.player_image.set_colorkey((0, 0, 0))
-        self.player_image = pygame.transform.scale(self.player_image,(self.player_image.get_width(), self.player_image.get_height()))
-        self.player_rect = pygame.Rect(self.pos.x, self.pos.y, self.player_image.get_width(), self.player_image.get_height())
-        self.tiles = []
+    def __init__(self, player_image_dir):
 
+        self.pos = pygame.math.Vector2(50, 50)
+        self.velocity = pygame.math.Vector2(0, 0)
+        self.player_anim = Animator(player_image_dir)
+        self.scale = 2
+        self.flipped = False
+
+        # self.player_image = pygame.image.load(player_image).convert()
+        # self.player_image.set_colorkey((0, 0, 0))
+        # self.player_image = pygame.transform.scale(self.player_image,(self.player_image.get_width(), self.player_image.get_height()))
+
+        # self.player_rect = pygame.Rect(self.pos.x, self.pos.y, self.player_image.get_width(), self.player_image.get_height())
+
+        self.player_rect = pygame.Rect(self.pos.x, self.pos.y, 16*self.scale, 16*self.scale)
+
+        self.tiles = []
 
         self.JUMPSPEED = -5
         self.H_SPEED = 0.3
@@ -32,53 +40,42 @@ class Player():
         self.BACK_KEY = False
 
         self.KEYPRESSED = False
-        self.JUMPED_STATE =  False
-        
+        self.JUMPED_STATE = False
 
-
-
-    def load_colliders(self,tiles):
+    def load_colliders(self, tiles):
 
         self.tiles = tiles
 
-
-        
     def collision_check(self):
 
         collide_rects = []
-        
+
         for tile in self.tiles:
-            
-            
+
             if self.player_rect.colliderect(tile):
 
                 collide_rects.append(tile)
-            
+
         return collide_rects
 
+    def move(self, axis):
 
-
-        
-    def move(self,axis):
-        
-        collision_dir = { "top" : False, "bottom" : False, "left" : False, "right" : False }
-
-
+        collision_dir = {"top": False, "bottom": False,
+                         "left": False, "right": False}
 
         if axis == "horizontal":
 
-            collide_rects = self.collision_check() # checking for horizontal collision
+            collide_rects = self.collision_check()  # checking for horizontal collision
 
             for tile in collide_rects:
 
                 if self.velocity.x > 0:
-                    
+
                     self.player_rect.right = tile.left
                     collision_dir["right"] = True
 
-
                 elif self.velocity.x < 0:
-                    
+
                     self.player_rect.left = tile.right
                     collision_dir["left"] = True
 
@@ -98,18 +95,15 @@ class Player():
 
             for tile in collide_rects:
 
-    
                 if self.velocity.y > 0:
-                    
+
                     self.player_rect.bottom = tile.top
                     collision_dir["bottom"] = True
-                
+
                 elif self.velocity.y < 0:
 
                     self.player_rect.top = tile.bottom
                     collision_dir["top"] = True
-            
-
 
             if collision_dir["bottom"]:
 
@@ -117,16 +111,10 @@ class Player():
                 self.JUMPED_STATE = False
 
             if collision_dir["top"]:
-                
+
                 self.velocity.y = 0
 
-
         self.pos = pygame.Vector2(self.player_rect.x, self.player_rect.y)
-                              
-
-  
-
-
 
 
     def check_events(self):
@@ -152,9 +140,8 @@ class Player():
                 self.BACK_KEY = True
 
 
-
     def reset_keys(self):
-    
+
         self.UP_KEY = False
         self.DOWN_KEY = False
         self.LEFT_KEY = False
@@ -162,17 +149,17 @@ class Player():
         self.KEYPRESSED = False
 
 
-
     def set_position(self, x, y):
 
         self.pos.x = x
         self.pos.y = y
-        
 
 
     def event_response(self):
 
         self.KEYPRESSED = self.LEFT_KEY or self.RIGHT_KEY
+
+        self.player_anim.changeState("idle")
 
         if self.UP_KEY == True and self.JUMPED_STATE == False:
 
@@ -182,14 +169,16 @@ class Player():
 
         if self.KEYPRESSED:
 
+            self.player_anim.changeState("walk")
+
             if self.RIGHT_KEY:
 
                 self.velocity.x += self.H_SPEED
-               
+
             if self.LEFT_KEY:
 
                 self.velocity.x -= self.H_SPEED
-                        
+
             if self.velocity.x > self.MAXSPEED:
 
                 self.velocity.x = self.MAXSPEED
@@ -201,59 +190,44 @@ class Player():
         else:
 
             self.velocity.x = self.velocity.x * self.FRICTION
-            
-            if abs(self.velocity.x) < 1:
 
+            if abs(self.velocity.x) < 1:
+            
                 self.velocity.x = 0
 
 
-           
 
-
-
-    def  update(self,tile_rects):
+    def update(self, tile_rects):
 
         self.load_colliders(tile_rects)
         self.event_response()
 
         self.player_rect.y += self.velocity.y
         self.velocity.y += GRAVITY
-        
+
         self.move("vertical")
-      
 
         self.player_rect.x += self.velocity.x
-        
+
         self.move("horizontal")
 
 
-        
-        
     def render(self, surface, offset):
-        
-        surface.blit(self.player_image,self.pos - offset)
-        
-        return surface
-        
 
+        if self.velocity.x > 0:
+            self.flipped = False
+        elif self.velocity.x < 0:
+            self.flipped = True    
 
-
-
+        if self.flipped == True:
             
+            player_image = pygame.transform.flip(self.player_anim.frameRender(),True,False)
 
-        
-        
+        else:
 
-
-
-
+            player_image = pygame.transform.flip(self.player_anim.frameRender(),False,False)
 
 
+        surface.blit(player_image, self.pos - offset)
 
-    
-    
-    
-
-
-
-
+        return surface
