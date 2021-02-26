@@ -66,8 +66,11 @@ class Animator:
         # walk_directory = os.path.join(directory, "walk")
         # idle_directory = os.path.join(directory, "idle")
 
-        self.walk_animation = Animation(directory,"walk",16)
+        self.walk_animation = Animation(directory,"walk",8)
         self.idle_animation = Animation(directory,"idle",16)
+        self.jumpUp_animation  = Animation(directory,"jump_up",1)
+        self.jumpDown_animation = Animation(directory, "jump_down", 1)
+
     
 
 
@@ -79,6 +82,12 @@ class Animator:
 
         elif self.state == "idle":
             anim = self.idle_animation.getInstance()
+        
+        elif self.state == "jump_up":
+            anim = self.jumpUp_animation.getInstance()
+        
+        elif self.state == "jump_down":
+            anim = self.jumpDown_animation.getInstance()
 
 
         player_image = anim.getFrame()        

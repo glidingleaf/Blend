@@ -217,7 +217,12 @@ class Player():
         if self.velocity.x > 0:
             self.flipped = False
         elif self.velocity.x < 0:
-            self.flipped = True    
+            self.flipped = True
+
+        # if self.velocity.y > 0 and self.JUMPED_STATE:
+        #     self.player_anim.changeState("jump_up")
+        # elif self.velocity.y < 0 and self.JUMPED_STATE:
+        #     self.player_anim.changeState("jump_down")
 
         if self.flipped == True:
             
