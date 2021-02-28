@@ -10,7 +10,7 @@ class Camera():
 
         self.focus_offset = pygame.math.Vector2(-width/2  + self.player.pos.x/2, -height/2  + self.player.pos.y/2)
         self.width , self.height = width , height
-        self.C = 0
+        self.camera_limit_X = (0,500)
     
     def update(self,player):
 
@@ -19,7 +19,8 @@ class Camera():
 
         self.offset.x, self.offset.y = int(self.offset_f.x), int(self.offset_f.y)
 
-        # self.offset.x = int(self.offset_f.x)
 
-        # self.offset.y = max( int(self.offset.y), self.C)
+        self.offset.x = max(int(self.offset.x), self.camera_limit_X[0])
+        self.offset.x = min(int(self.offset.x), self.camera_limit_X[1])
         
+    

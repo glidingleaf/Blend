@@ -7,9 +7,12 @@ from .camera import Camera
 
 class Game():
 
+
     def __init__(self):
 
+        
         pygame.init()
+        self.font = pygame.font.SysFont("Arial", 18)
         self.running = True
         self.playing = False
 
@@ -27,6 +30,7 @@ class Game():
 
         self.GAMEWINDOW_W, self.GAMEWINDOW_H = 512, 288
         self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H = int(512*3), int(288*3)
+        self.WINDOW_SIZE = (self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H)
 
         self.gamescreen = pygame.Surface(
             (self.GAMEWINDOW_W, self.GAMEWINDOW_H))
@@ -34,9 +38,11 @@ class Game():
             (self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H))
         self.clock = pygame.time.Clock()
 
-        self.level = Map("./assets/maps/world_test2.tmx")
+        self.level = Map("./assets/maps/NewWorld.tmx",self.WINDOW_SIZE)
 
-        os.chdir("./assets/images/player")
+        os.chdir("../")
+        print(os.getcwd())
+        os.chdir("./images/player")
         self.p = Player(os.getcwd())
         
 
@@ -63,7 +69,8 @@ class Game():
 
             # Map render
             self.gamescreen = self.level.drawmap(
-                self.gamescreen, self.camera.offset)  # testing maps
+                self.gamescreen, self.camera.offset,self.p.pos)  # testing maps
+
 
             # Player Render
             player_with_world = self.p.render(
@@ -73,6 +80,9 @@ class Game():
 
             # Window Render
             self.window.blit(scaled_surface, (0, 0))
+
+            #framerate display 
+            self.window.blit(self.update_fps(), (10, 0))
 
             pygame.display.update()
             self.clock.tick(self.FRAMERATE)
@@ -123,3 +133,8 @@ class Game():
 
                 if event.key == pygame.K_UP:
                     self.p.UP_KEY = False
+
+    def update_fps(self):
+        fps = str(int(self.clock.get_fps()))
+        fps_text = self.font.render(fps, 1, pygame.Color("coral"))
+        return fps_text
