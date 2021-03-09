@@ -3,6 +3,7 @@ from .map import Map
 import os
 from .player import Player
 from .camera import Camera
+import particles
 
 
 class Game():
@@ -12,11 +13,13 @@ class Game():
 
         
         pygame.init()
+        
         self.font = pygame.font.SysFont("Arial", 18)
         self.running = True
         self.playing = False
 
-        self.COLOR_BG = (99, 155, 255)
+        # self.COLOR_BG = (99, 155, 255)
+        self.COLOR_BG =(160,78,83)
         self.FRAMERATE = 60
 
         # input keys
@@ -38,15 +41,22 @@ class Game():
             (self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H))
         self.clock = pygame.time.Clock()
 
-        self.level = Map("./assets/maps/NewWorld.tmx",self.WINDOW_SIZE)
-
+        self.level = Map("./assets/maps/NewWorld.tmx", self.WINDOW_SIZE)
         os.chdir("../")
+
         print(os.getcwd())
+
+        self.bg = pygame.image.load("./images/background/bg.png").convert()
+
+
         os.chdir("./images/player")
         self.p = Player(os.getcwd())
-        
 
         self.camera = Camera(self.p, self.GAMEWINDOW_W, self.GAMEWINDOW_H)
+
+        
+
+        
 
     def game_loop(self):
 
@@ -66,6 +76,13 @@ class Game():
 
             # screen fill
             self.gamescreen.fill(self.COLOR_BG)
+
+            # background render
+
+            self.gamescreen.blit(self.bg, (0, -150))
+            
+            # self.gamescreen = self.level.render_background(self.gamescreen,self.camera.offset)
+
 
             # Map render
             self.gamescreen = self.level.drawmap(

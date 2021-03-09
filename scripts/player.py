@@ -11,7 +11,7 @@ class Player():
 
     def __init__(self, player_image_dir):
 
-        self.pos = pygame.math.Vector2(50, 50)
+        self.pos = pygame.math.Vector2(100, 300)
         self.velocity = pygame.math.Vector2(0, 0)
         self.player_anim = Animator(player_image_dir)
         self.scale = 2
@@ -28,7 +28,7 @@ class Player():
         self.tiles = []
 
         self.JUMPSPEED = -5
-        self.H_SPEED = 0.3
+        self.H_SPEED = 0.4
         self.FRICTION = 0.8
         self.MAXSPEED = 2.0
 
@@ -231,7 +231,6 @@ class Player():
         else:
 
             player_image = pygame.transform.flip(self.player_anim.frameRender(),False,False)
-
 
         surface.blit(player_image, self.pos - offset)
 

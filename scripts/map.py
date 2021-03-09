@@ -3,6 +3,7 @@ import pygame
 from pytmx.util_pygame import load_pygame
 import pytmx
 import os
+import particles
 
 class Map():
 
@@ -18,35 +19,66 @@ class Map():
         os.chdir("./assets/maps")
         self.tmxdata = pytmx.TiledMap('NewWorld.tmx')
         self.window_size = window_size
-        self.rendering_range = pygame.math.Vector2(20,20)
+        self.rendering_range = pygame.math.Vector2(25, 12)
+        self.fire = particles.Fire()
+
+        for i in range(100):
+            self.fire.update(pygame.Surface((32,32)),(0,0))
 
 
  
     def render_map(self, screen, offset,player_pos):
 
-        screen.fill((99,155,255)) # needs to be changed(background color has been hardcoded to test)
+        # screen.fill((99,155,255)) # needs to be changed(background color has been hardcoded to test)
         self.tile_rects.clear()
         count =0
         for layer in self.map.layers:
             
-            
-            for x,y, gid in layer:
-                
-                if gid != 0  and self.inBounds(x,y,offset,player_pos):
+            if layer.properties["imagelayer"] == False:
+
+                for x,y, gid in layer:
                     
-                    screen.blit(pygame.transform.scale( self.tile_image(gid),(self.tile_width*self.SCALE,    self.tile_height*self.SCALE ) )  , (x*self.tile_width*self.SCALE , y*self.tile_height*self.SCALE ) - offset)
+                    if gid != 0  and self.inBounds(x,y,offset,player_pos):
+                        
+                        screen.blit(pygame.transform.scale( self.tile_image(gid),(self.tile_width*self.SCALE,    self.tile_height*self.SCALE ) )  , (x*self.tile_width*self.SCALE , y*self.tile_height*self.SCALE ) - offset)
 
-                    properties = self.tmxdata.get_tile_properties_by_gid(gid)
+                        properties = self.tmxdata.get_tile_properties_by_gid(gid)
 
-                    if properties["collision"] == False:
+                        if properties["collision"] == False:
 
-                        self.tile_rects.append(pygame.Rect(
-                            x*self.tile_width*self.SCALE, y*self.tile_height*self.SCALE, self.tile_width*self.SCALE, self.tile_height*self.SCALE))
+                            self.tile_rects.append(pygame.Rect(
+                                x*self.tile_width*self.SCALE, y*self.tile_height*self.SCALE, self.tile_width*self.SCALE, self.tile_height*self.SCALE))
 
-                    count += 1
+                        if properties["id"] == 18:
+                            
+                            self.fire.update(screen, (x * self.tile_width * self.SCALE, y * self.tile_height * self.SCALE) - offset)
 
-        print(count)
+                                
 
+                                
+                                
+                            
+
+
+                        count += 1
+
+
+        # print(count)
+
+    def render_background(self, screen, offset):
+
+        screen.fill((99, 155, 255))
+        
+        for layer in self.map.layers:
+
+            if layer.properties["imagelayer"]:
+
+                screen.blit(pygame.transform.scale(layer.image, (512*self.SCALE,
+                                                                 288*self.SCALE)), (-offset.x * layer.properties["parallax_mul"],0))
+                                                                 
+                # screen.blit(layer.image, (0, 0))
+                
+        return screen
 
 
     def tile_rects(self):
@@ -77,6 +109,8 @@ class Map():
         else:
 
             return False
+
+
 
 
 
