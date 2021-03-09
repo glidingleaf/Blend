@@ -18,7 +18,7 @@ class Particles:
 
         self.Color1 = pygame.Color(255, 232, 8)
         self.Color2 = pygame.Color(255, 0, 0)
-        self.color_step = 0.01
+        self.color_step = 0.1
 
 
     def update(self,surface):
@@ -90,11 +90,11 @@ class Fire:
             self.fire_surface.fill((0, 0, 0))
             self.particles.append(Particles())
 
-            for p in self.particles:
+            for index, p in sorted(enumerate(self.particles),reverse =True):
 
                 if p.toosmall():
 
-                    self.particles.remove(p)
+                    self.particles.pop(index)
 
                 else:
 
