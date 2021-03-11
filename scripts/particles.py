@@ -100,7 +100,7 @@ class Fire:
 
                     p.update(self.fire_surface)
 
-        surface.blit(self.fire_surface, (location[0] + 5, location[1] - 5))
+        surface.blit(self.fire_surface, (location[0] + 6, location[1] - 5))
         
         self.counter = self.counter + 1
 

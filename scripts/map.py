@@ -22,8 +22,8 @@ class Map():
         self.rendering_range = pygame.math.Vector2(25, 12)
         self.fire = particles.Fire()
 
-        for i in range(100):
-            self.fire.update(pygame.Surface((32,32)),(0,0))
+        # for i in range(100):
+        #     self.fire.update(pygame.Surface((32,32)),(0,0))
 
 
  

@@ -25,7 +25,7 @@ class Game():
         # input keys
 
         self.UP_KEY = False
-        self.DONW_KEY = False
+        self.DOWN_KEY = False
         self.LEFT_KEY = False
         self.RIGHT_KEY = False
         self.START_KEY = False

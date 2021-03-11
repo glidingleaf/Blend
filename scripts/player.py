@@ -7,9 +7,11 @@ import math
 GRAVITY = 0.3
 
 
-class Player():
+class Player(pygame.sprite.Sprite):
 
     def __init__(self, player_image_dir):
+
+        pygame.sprite.Sprite.__init__(self)
 
         self.pos = pygame.math.Vector2(100, 300)
         self.velocity = pygame.math.Vector2(0, 0)
@@ -21,9 +23,9 @@ class Player():
         # self.player_image.set_colorkey((0, 0, 0))
         # self.player_image = pygame.transform.scale(self.player_image,(self.player_image.get_width(), self.player_image.get_height()))
 
-        # self.player_rect = pygame.Rect(self.pos.x, self.pos.y, self.player_image.get_width(), self.player_image.get_height())
+        # self.rect = pygame.Rect(self.pos.x, self.pos.y, self.player_image.get_width(), self.player_image.get_height())
 
-        self.player_rect = pygame.Rect(self.pos.x, self.pos.y, 16*self.scale, 16*self.scale)
+        self.rect = pygame.Rect(self.pos.x, self.pos.y, 16*self.scale, 16*self.scale)
 
         self.tiles = []
 
@@ -52,7 +54,7 @@ class Player():
 
         for tile in self.tiles:
 
-            if self.player_rect.colliderect(tile):
+            if self.rect.colliderect(tile):
 
                 collide_rects.append(tile)
 
@@ -71,22 +73,22 @@ class Player():
 
                 if self.velocity.x > 0:
 
-                    self.player_rect.right = tile.left
+                    self.rect.right = tile.left
                     collision_dir["right"] = True
 
                 elif self.velocity.x < 0:
 
-                    self.player_rect.left = tile.right
+                    self.rect.left = tile.right
                     collision_dir["left"] = True
 
             if collision_dir["right"]:
 
-                self.player_rect.right = tile.left
+                self.rect.right = tile.left
                 self.velocity.x = 0
 
             if collision_dir["left"]:
 
-                self.player_rect.left = tile.right
+                self.rect.left = tile.right
                 self.velocity.x = 0
 
         else:
@@ -97,12 +99,12 @@ class Player():
 
                 if self.velocity.y > 0:
 
-                    self.player_rect.bottom = tile.top
+                    self.rect.bottom = tile.top
                     collision_dir["bottom"] = True
 
                 elif self.velocity.y < 0:
 
-                    self.player_rect.top = tile.bottom
+                    self.rect.top = tile.bottom
                     collision_dir["top"] = True
 
             if collision_dir["bottom"]:
@@ -114,7 +116,7 @@ class Player():
 
                 self.velocity.y = 0
 
-        self.pos = pygame.Vector2(self.player_rect.x, self.player_rect.y)
+        self.pos = pygame.Vector2(self.rect.x, self.rect.y)
 
 
     def check_events(self):
@@ -202,12 +204,12 @@ class Player():
         self.load_colliders(tile_rects)
         self.event_response()
 
-        self.player_rect.y += self.velocity.y
+        self.rect.y += self.velocity.y
         self.velocity.y += GRAVITY
 
         self.move("vertical")
 
-        self.player_rect.x += self.velocity.x
+        self.rect.x += self.velocity.x
 
         self.move("horizontal")
 
