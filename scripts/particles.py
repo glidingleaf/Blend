@@ -1,24 +1,31 @@
 import pygame
 import random
 import math
+import shared
+
 
 
 class Particles:
 
     def __init__(self):
 
+        self.side = random.randint(round(shared.TILESIZE*shared.SCALE*0.1), round(shared.TILESIZE*shared.SCALE*0.2))
+        # self.side = random.randint(3, 5)
         self.velocity = pygame.math.Vector2(0, 0)
-        self.location = pygame.Vector2(8,24)
+        self.location = pygame.Vector2(shared.TILESIZE * shared.SCALE * 0.5,
+                                       shared.TILESIZE * shared.SCALE * 1.5) - (self.side * 0.5, self.side * 0.5)
+
         self.velocity.x = random.randint(-10, 10)/10
         self.velocity.y = -1.0
-        self.side = random.randint(3, 5)
-        self.rect = pygame.Rect(self.location, (self.side, self.side))
+        self.rect = pygame.Rect(self.location , (self.side, self.side))
 
         self.i = 0
 
         self.Color1 = pygame.Color(255, 232, 8)
         self.Color2 = pygame.Color(255, 0, 0)
         self.color_step = 0.1
+        print(self.side)
+        
 
 
     def update(self,surface):
@@ -76,7 +83,8 @@ class Fire:
     def __init__(self):
         
         self.particles = []
-        self.fire_surface = pygame.Surface((16, 32))
+        self.tile_length = shared.TILESIZE * shared.SCALE # tile side is hard coded needs to be changed
+        self.fire_surface = pygame.Surface((self.tile_length, self.tile_length*2 ))
         self.fire_surface.set_colorkey((0, 0, 0))
         self.RATE = 4
         self.counter = 0
@@ -100,7 +108,7 @@ class Fire:
 
                     p.update(self.fire_surface)
 
-        surface.blit(self.fire_surface, (location[0] + 6, location[1] - 5))
+        surface.blit(self.fire_surface, (location[0] , location[1] - (self.tile_length) + 2*shared.SCALE))
         
         self.counter = self.counter + 1
 

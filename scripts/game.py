@@ -4,6 +4,7 @@ import os
 from .player import Player
 from .camera import Camera
 import particles
+import shared
 
 
 class Game():
@@ -31,14 +32,14 @@ class Game():
         self.START_KEY = False
         self.BACK_KEY = False
 
-        self.GAMEWINDOW_W, self.GAMEWINDOW_H = 512, 288
-        self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H = int(512*3), int(288*3)
+        self.GAMEWINDOW_W, self.GAMEWINDOW_H = shared.GAMEWINDOW_W, shared.GAMEWINDOW_H
+        self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H = shared.A_GAMEWINDOW_W, shared.A_GAMEWINDOW_H
+
         self.WINDOW_SIZE = (self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H)
 
-        self.gamescreen = pygame.Surface(
-            (self.GAMEWINDOW_W, self.GAMEWINDOW_H))
-        self.window = pygame.display.set_mode(
-            (self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H))
+        self.gamescreen = pygame.Surface((self.GAMEWINDOW_W, self.GAMEWINDOW_H))
+        self.window = pygame.display.set_mode((self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H))
+
         self.clock = pygame.time.Clock()
 
         self.level = Map("./assets/maps/NewWorld.tmx", self.WINDOW_SIZE)
@@ -86,8 +87,10 @@ class Game():
 
             # Map render
             self.gamescreen = self.level.drawmap(
-                self.gamescreen, self.camera.offset,self.p.pos)  # testing maps
+                self.gamescreen, self.camera.offset,self.p.pos,self.camera.box)  # testing maps
 
+            # self.gamescreen = self.level.getmapsurface(self.gamescreen,self.camera.box)
+            
 
             # Player Render
             player_with_world = self.p.render(
@@ -97,6 +100,7 @@ class Game():
 
             # Window Render
             self.window.blit(scaled_surface, (0, 0))
+            
 
             #framerate display 
             self.window.blit(self.update_fps(), (10, 0))

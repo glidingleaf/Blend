@@ -1,6 +1,7 @@
 
 import pygame
 import os
+import shared
 
 
 class Animation:
@@ -14,7 +15,7 @@ class Animation:
         self.filenames = os.listdir(self.directory)
         self.total_frames = len(self.filenames)
         self.frame_diff = frame_diff
-        self.scale = 2
+        self.scale = shared.SCALE
         self.frame = 1
         self.frame_gap = 1
         

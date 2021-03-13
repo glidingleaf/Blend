@@ -3,8 +3,6 @@
 import sys
 sys.path.append("./scripts")
 
-
-
 from scripts.game import Game
 
 g = Game()

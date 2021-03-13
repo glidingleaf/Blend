@@ -2,6 +2,7 @@ import pygame
 from .map import Map
 from .animator import Animator
 import math
+import shared
 
 
 GRAVITY = 0.3
@@ -16,7 +17,7 @@ class Player(pygame.sprite.Sprite):
         self.pos = pygame.math.Vector2(100, 300)
         self.velocity = pygame.math.Vector2(0, 0)
         self.player_anim = Animator(player_image_dir)
-        self.scale = 2
+        self.scale = shared.SCALE
         self.flipped = False
 
         # self.player_image = pygame.image.load(player_image).convert()

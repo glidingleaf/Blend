@@ -474,27 +474,6 @@
  <tileset firstgid="1025" name="bg" tilewidth="16" tileheight="16" tilecount="576" columns="32">
   <image source="../images/background/bg1.png" width="512" height="288"/>
  </tileset>
- <imagelayer id="7" name="bge" visible="0" locked="1">
-  <image source="../images/background/bge.png" width="512" height="288"/>
-  <properties>
-   <property name="imagelayer" type="bool" value="true"/>
-   <property name="parallax_mul" type="float" value="0"/>
-  </properties>
- </imagelayer>
- <imagelayer id="5" name="bg1" visible="0" locked="1" offsetx="0" offsety="174">
-  <image source="../images/background/bg1.png" width="512" height="288"/>
-  <properties>
-   <property name="imagelayer" type="bool" value="true"/>
-   <property name="parallax_mul" type="float" value="0.10000000000000009"/>
-  </properties>
- </imagelayer>
- <imagelayer id="6" name="bg2" visible="0" locked="1" offsetx="-16" offsety="190">
-  <image source="../images/background/bg2.png" width="512" height="288"/>
-  <properties>
-   <property name="imagelayer" type="bool" value="true"/>
-   <property name="parallax_mul" type="float" value="0.2"/>
-  </properties>
- </imagelayer>
  <layer id="1" name="platform" width="100" height="32" offsetx="20" offsety="-25">
   <properties>
    <property name="imagelayer" type="bool" value="false"/>
