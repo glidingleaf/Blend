@@ -22,11 +22,11 @@ class Camera():
 
 
 
-        self.offset_f.x = max(int(self.offset_f.x), self.camera_limit_X[0])
-        self.offset_f.x = min(int(self.offset_f.x), self.camera_limit_X[1])
+        # self.offset_f.x = max(int(self.offset_f.x), self.camera_limit_X[0])
+        # self.offset_f.x = min(int(self.offset_f.x), self.camera_limit_X[1])
 
-        self.offset_f.y = max(int(self.offset_f.y), self.camera_limit_Y[0])
-        self.offset_f.y = min(int(self.offset_f.y), self.camera_limit_Y[1])
+        # self.offset_f.y = max(int(self.offset_f.y), self.camera_limit_Y[0])
+        # self.offset_f.y = min(int(self.offset_f.y), self.camera_limit_Y[1])
         
         self.offset.x, self.offset.y = int(self.offset_f.x), int(self.offset_f.y)
 

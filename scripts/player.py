@@ -3,6 +3,7 @@ from .map import Map
 from .animator import Animator
 import math
 import shared
+import time
 
 
 GRAVITY = 0.3
@@ -31,9 +32,13 @@ class Player(pygame.sprite.Sprite):
         self.tiles = []
 
         self.JUMPSPEED = -5
-        self.H_SPEED = 0.4
+        self.H_SPEED_LOW = 0.5
+        self.H_SPEED_HIGH = 0.9
         self.FRICTION = 0.8
-        self.MAXSPEED = 2.0
+        self.MAXSPEED_LOW = 2.5
+        self.MAXSPEED_HIGH = 3
+        self.H_SPEED  = self.H_SPEED_LOW
+        self.MAXSPEED  = self.MAXSPEED_LOW
 
         self.UP_KEY = False
         self.DOWN_KEY = False
@@ -41,9 +46,27 @@ class Player(pygame.sprite.Sprite):
         self.RIGHT_KEY = False
         self.START_KEY = False
         self.BACK_KEY = False
+        self.SHIFT_KEY = False
 
         self.KEYPRESSED = False
         self.JUMPED_STATE = False
+
+        self.prev_time = time.time()
+        self.cur_time = 0
+        self.dt = 0
+        self.LOCKED_FPS = 60
+        self.eff_dt = 0
+
+        self.dropanim_trigger = False
+
+    def timedamper(self):
+
+        self.cur_time = time.time()
+        self.dt = self.cur_time - self.prev_time
+        self.prev_time = self.cur_time
+
+        self.eff_dt = self.dt * self.LOCKED_FPS
+
 
     def load_colliders(self, tiles):
 
@@ -61,7 +84,11 @@ class Player(pygame.sprite.Sprite):
 
         return collide_rects
 
+        
+
     def move(self, axis):
+
+        
 
         collision_dir = {"top": False, "bottom": False,
                          "left": False, "right": False}
@@ -109,6 +136,12 @@ class Player(pygame.sprite.Sprite):
                     collision_dir["top"] = True
 
             if collision_dir["bottom"]:
+                
+                if self.dropanim_trigger:
+
+                    self.player_anim.changeState("drop")
+                    self.dropanim_trigger = False
+                    
 
                 self.velocity.y = 0
                 self.JUMPED_STATE = False
@@ -122,25 +155,46 @@ class Player(pygame.sprite.Sprite):
 
     def check_events(self):
 
-        if event.type == pygame.KEYDOWN:
+        for event in pygame.event.get():
 
-            if event.key == pygame.K_RETURN:
-                self.START_KEY = True
+            if event.type == pygame.KEYDOWN:
 
-            if event.key == pygame.K_UP:
-                self.UP_KEY = True
+                if event.key == pygame.K_RETURN:
+                    self.START_KEY = True
 
-            if event.key == pygame.K_DOWN:
-                self.DOWN_KEY = True
+                if event.key == pygame.K_SPACE:
+                    self.UP_KEY = True
 
-            if event.key == pygame.K_RIGHT:
-                self.RIGHT_KEY = True
+                if event.key == pygame.K_DOWN:
+                    self.DOWN_KEY = True
 
-            if event.key == pygame.K_LEFT:
-                self.LEFT_KEY = True
+                if event.key == pygame.K_d:
+                    self.RIGHT_KEY = True
 
-            if event.key == pygame.K_BACKSPACE:
-                self.BACK_KEY = True
+                if event.key == pygame.K_a:
+                    self.LEFT_KEY = True
+
+                if event.key == pygame.K_BACKSPACE:
+                    self.BACK_KEY = True
+
+                if event.key == pygame.K_LSHIFT:
+                    self.SHIFT_KEY = True
+
+            if event.type == pygame.KEYUP:
+
+                if event.key == pygame.K_d:
+                    self.RIGHT_KEY = False
+
+                if event.key == pygame.K_a:
+                    self.LEFT_KEY = False
+
+                if event.key == pygame.K_SPACE:
+                    self.UP_KEY = False
+            
+                if event.key == pygame.K_LSHIFT:
+                    self.SHIFT_KEY = False
+            
+            
 
 
     def reset_keys(self):
@@ -149,8 +203,8 @@ class Player(pygame.sprite.Sprite):
         self.DOWN_KEY = False
         self.LEFT_KEY = False
         self.RIGHT_KEY = False
+        self.SHIFT_KEY = False
         self.KEYPRESSED = False
-
 
     def set_position(self, x, y):
 
@@ -172,9 +226,19 @@ class Player(pygame.sprite.Sprite):
 
         if self.KEYPRESSED:
 
-            self.player_anim.changeState("walk")
+            if self.SHIFT_KEY:
+                
+                self.player_anim.changeState("run")
+                self.H_SPEED = self.H_SPEED_HIGH
+                self.MAXSPEED = self.MAXSPEED_HIGH
+            else:
 
-            if self.RIGHT_KEY:
+                self.player_anim.changeState("walk")
+                self.H_SPEED = self.H_SPEED_LOW
+                self.MAXSPEED = self.MAXSPEED_LOW
+                
+
+            if self.RIGHT_KEY == True:
 
                 self.velocity.x += self.H_SPEED
 
@@ -191,28 +255,50 @@ class Player(pygame.sprite.Sprite):
                 self.velocity.x = -self.MAXSPEED
 
         else:
-
-            self.velocity.x = self.velocity.x * self.FRICTION
+            self.velocity.x = self.velocity.x * self.FRICTION 
 
             if abs(self.velocity.x) < 1:
             
                 self.velocity.x = 0
+        
+        if self.velocity.y < 0 and self.JUMPED_STATE:
+
+            self.player_anim.changeState("jump")
+        
+        elif self.velocity.y > 0 and self.JUMPED_STATE:
+
+            self.player_anim.changeState("fall")
+
+        if self.velocity.y > 1:
+
+            self.dropanim_trigger = True
+        
 
 
 
     def update(self, tile_rects):
 
+        self.timedamper()
+
+        self.check_events()
+
         self.load_colliders(tile_rects)
         self.event_response()
 
-        self.rect.y += self.velocity.y
+        self.rect.y += round(self.velocity.y * self.eff_dt)
         self.velocity.y += GRAVITY
 
         self.move("vertical")
 
-        self.rect.x += self.velocity.x
+        self.rect.x += round(self.velocity.x * self.eff_dt) 
 
         self.move("horizontal")
+
+        # print(self.velocity.x * self.eff_dt)
+
+        
+
+        
 
 
     def render(self, surface, offset):

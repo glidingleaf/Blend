@@ -5,6 +5,7 @@ from .player import Player
 from .camera import Camera
 import particles
 import shared
+import time
 
 
 class Game():
@@ -55,6 +56,19 @@ class Game():
 
         self.camera = Camera(self.p, self.GAMEWINDOW_W, self.GAMEWINDOW_H)
 
+        self.prev_time = time.time()
+        self.cur_time = 0
+        self.dt = 0
+        self.LOCKED_FPS = 30
+        self.eff_dt = 0
+
+    def timedamper(self):
+
+        self.cur_time = time.time()
+        self.dt = self.cur_time - self.prev_time
+        self.prev_time = self.cur_time
+
+        self.eff_dt = self.dt * self.LOCKED_FPS
         
 
         
@@ -63,8 +77,10 @@ class Game():
 
         while self.playing:
 
-            #    self.p.reset_keys()
-            self.check_events()
+            # self.timedamper()
+
+            # self.p.reset_keys()
+            # self.check_events()
 
             if self.START_KEY == True:
                 self.playing = False
@@ -81,6 +97,7 @@ class Game():
             # background render
 
             self.gamescreen.blit(self.bg, (0, -150))
+            # self.gamescreen.fill((0,0,0))
             
             # self.gamescreen = self.level.render_background(self.gamescreen,self.camera.offset)
 
@@ -123,7 +140,7 @@ class Game():
                 if event.key == pygame.K_RETURN:
                     self.p.START_KEY = True
 
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_SPACE:
                     self.p.UP_KEY = True
 
                 if event.key == pygame.K_DOWN:
@@ -152,7 +169,7 @@ class Game():
                 if event.key == pygame.K_LEFT:
                     self.p.LEFT_KEY = False
 
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_SPACE:
                     self.p.UP_KEY = False
 
     def update_fps(self):

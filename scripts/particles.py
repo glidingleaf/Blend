@@ -24,7 +24,7 @@ class Particles:
         self.Color1 = pygame.Color(255, 232, 8)
         self.Color2 = pygame.Color(255, 0, 0)
         self.color_step = 0.1
-        print(self.side)
+        # print(self.side)
         
 
 
@@ -89,6 +89,11 @@ class Fire:
         self.RATE = 4
         self.counter = 0
 
+        self.glow_radius = shared.TILESIZE * shared.SCALE 
+        self.glow = pygame.Surface((self.glow_radius*2, self.glow_radius*2))
+        self.glow.set_colorkey((0, 0, 0))
+        pygame.draw.circle(self.glow, (20, 20, 20), (self.glow_radius, self.glow_radius), self.glow_radius)
+        self.phase = 0
 
 
     def update(self, surface, location):
@@ -108,10 +113,15 @@ class Fire:
 
                     p.update(self.fire_surface)
 
-        surface.blit(self.fire_surface, (location[0] , location[1] - (self.tile_length) + 2*shared.SCALE))
+        surface.blit(self.fire_surface, (location[0], location[1] - (
+            self.tile_length) + 2*shared.SCALE), special_flags=pygame.BLEND_RGB_ADD)
+        
+
+        
+        surface.blit(self.glow, (location[0]- self.glow_radius * 0.5, location[1] - (self.tile_length) + self.glow_radius * 0.5), special_flags=pygame.BLEND_RGB_ADD)
+        
         
         self.counter = self.counter + 1
-
-
+        
 
         

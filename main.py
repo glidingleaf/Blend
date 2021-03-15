@@ -12,3 +12,4 @@ while g.running:
 
     g.playing = True
     g.game_loop()
+

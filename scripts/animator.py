@@ -12,10 +12,10 @@ class Animation:
         self.player_image = []
         self.directory = os.path.join(directory,typedir)
 
-        self.filenames = os.listdir(self.directory)
+        self.filenames = sorted(os.listdir(self.directory))
         self.total_frames = len(self.filenames)
         self.frame_diff = frame_diff
-        self.scale = shared.SCALE
+        self.scale = shared.SCALE * 0.5
         self.frame = 1
         self.frame_gap = 1
         
@@ -28,9 +28,11 @@ class Animation:
             temp_image.set_colorkey((0, 0, 0))
 
             temp_image = pygame.transform.scale(
-                temp_image, (temp_image.get_width() * self.scale, temp_image.get_height() * self.scale))
+                temp_image, (int(temp_image.get_width() * self.scale), int(temp_image.get_height() * self.scale)))
 
             self.player_image.append(temp_image)
+
+
     
     def updateFrame(self):
 
@@ -68,10 +70,11 @@ class Animator:
         # idle_directory = os.path.join(directory, "idle")
 
         self.walk_animation = Animation(directory,"walk",8)
-        self.idle_animation = Animation(directory,"idle",16)
-        self.jumpUp_animation  = Animation(directory,"jump_up",1)
-        self.jumpDown_animation = Animation(directory, "jump_down", 1)
-
+        self.idle_animation = Animation(directory,"idle2",2)
+        self.jump_animation  = Animation(directory,"jump",1)
+        self.fall_animation = Animation(directory, "fall", 1)
+        self.run_animation = Animation(directory, "run", 1)
+        self.drop_animation = Animation(directory, "drop", 1)
     
 
 
@@ -84,11 +87,18 @@ class Animator:
         elif self.state == "idle":
             anim = self.idle_animation.getInstance()
         
-        elif self.state == "jump_up":
-            anim = self.jumpUp_animation.getInstance()
+        elif self.state == "jump":
+            anim = self.jump_animation.getInstance()
         
-        elif self.state == "jump_down":
-            anim = self.jumpDown_animation.getInstance()
+        elif self.state == "fall":
+            anim = self.fall_animation.getInstance()
+
+        elif self.state == "run":
+            anim = self.run_animation.getInstance()
+
+        elif self.state == "drop":
+            anim = self.drop_animation.getInstance()
+            print("drop")
 
 
         player_image = anim.getFrame()        
