@@ -3,4 +3,5 @@ Action Platformer
 
 Initial Engine clip -
 
-<div style="width:360px;max-width:100%;"><div style="height:0;padding-bottom:56.11%;position:relative;"><iframe width="360" height="202" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameBorder="0" src="https://imgflip.com/embed/53s71a"></iframe></div><p><a href="https://imgflip.com/gif/53s71a">via Imgflip</a></p></div>
+![53s71a](https://user-images.githubusercontent.com/26827270/113043169-ad747580-91b9-11eb-9036-3ee97caaa668.gif)
+
