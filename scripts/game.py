@@ -6,7 +6,7 @@ from .camera import Camera
 import particles
 import shared
 import time
-
+from .vfx import Mask
 
 class Game():
 
@@ -40,6 +40,7 @@ class Game():
 
         self.gamescreen = pygame.Surface((self.GAMEWINDOW_W, self.GAMEWINDOW_H))
         self.window = pygame.display.set_mode((self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H))
+        pygame.display.set_caption("Blend")
 
         self.clock = pygame.time.Clock()
 
@@ -49,6 +50,8 @@ class Game():
         print(os.getcwd())
 
         self.bg = pygame.image.load("./images/background/bg.png").convert()
+        
+        self.mask = Mask("./images/lighting")
 
 
         os.chdir("./images/player")
@@ -97,7 +100,7 @@ class Game():
             # background render
 
             self.gamescreen.blit(self.bg, (0, -150))
-            # self.gamescreen.fill((0,0,0))
+            self.gamescreen.fill((0,0,0))
             
             # self.gamescreen = self.level.render_background(self.gamescreen,self.camera.offset)
 
@@ -112,8 +115,15 @@ class Game():
             # Player Render
             player_with_world = self.p.render(
                 self.gamescreen, self.camera.offset)
+
+            # self.mask.apply_darkmask(player_with_world)
+            # self.mask.apply_lightmask(player_with_world, self.p.centerpos - self.camera.offset)
+
+            #surface scaling
             scaled_surface = pygame.transform.scale(
                 player_with_world, (self.A_GAMEWINDOW_W, self.A_GAMEWINDOW_H))
+            
+            
 
             # Window Render
             self.window.blit(scaled_surface, (0, 0))

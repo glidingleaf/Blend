@@ -1,5 +1,4 @@
 
-
 import sys
 sys.path.append("./scripts")
 
@@ -12,4 +11,3 @@ while g.running:
 
     g.playing = True
     g.game_loop()
-

@@ -20,6 +20,7 @@ class Player(pygame.sprite.Sprite):
         self.player_anim = Animator(player_image_dir)
         self.scale = shared.SCALE
         self.flipped = False
+        
 
         # self.player_image = pygame.image.load(player_image).convert()
         # self.player_image.set_colorkey((0, 0, 0))
@@ -28,6 +29,7 @@ class Player(pygame.sprite.Sprite):
         # self.rect = pygame.Rect(self.pos.x, self.pos.y, self.player_image.get_width(), self.player_image.get_height())
 
         self.rect = pygame.Rect(self.pos.x, self.pos.y, 16*self.scale, 16*self.scale)
+        self.centerpos = self.rect.center
 
         self.tiles = []
 
@@ -59,6 +61,7 @@ class Player(pygame.sprite.Sprite):
 
         self.dropanim_trigger = False
 
+
     def timedamper(self):
 
         self.cur_time = time.time()
@@ -84,14 +87,12 @@ class Player(pygame.sprite.Sprite):
 
         return collide_rects
 
-        
 
     def move(self, axis):
 
         
 
-        collision_dir = {"top": False, "bottom": False,
-                         "left": False, "right": False}
+        collision_dir = {"top": False, "bottom": False,"left": False, "right": False}
 
         if axis == "horizontal":
 
@@ -296,6 +297,10 @@ class Player(pygame.sprite.Sprite):
 
         # print(self.velocity.x * self.eff_dt)
 
+        self.centerpos = self.rect.center
+
+        
+
         
 
         
@@ -322,5 +327,9 @@ class Player(pygame.sprite.Sprite):
             player_image = pygame.transform.flip(self.player_anim.frameRender(),False,False)
 
         surface.blit(player_image, self.pos - offset)
+        
 
         return surface
+
+
+    
